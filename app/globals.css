@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { @apply bg-blush text-ink font-body antialiased; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.field {
+  @apply w-full rounded-xl border border-malina-soft bg-white px-4 py-3 text-[15px] outline-none transition
+         focus:border-malina focus:ring-2 focus:ring-malina/15 placeholder:text-ink-soft/50;
+}
+.label { @apply mb-1.5 block text-sm font-semibold text-ink; }
+
+details.faq > summary { list-style: none; cursor: pointer; }
+details.faq > summary::-webkit-details-marker { display: none; }
+details.faq[open] .faq-chevron { transform: rotate(45deg); }
