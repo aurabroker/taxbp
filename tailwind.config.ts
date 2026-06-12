@@ -11,8 +11,8 @@ const config: Config = {
         gold: "#C8963E",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
-        body: ["var(--font-body)", "sans-serif"],
+        display: ["Figtree", "system-ui", "sans-serif"],
+        body: ["Figtree", "system-ui", "sans-serif"],
       },
       boxShadow: {
         card: "0 10px 40px -12px rgba(216, 27, 96, 0.18)",

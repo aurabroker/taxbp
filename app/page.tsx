@@ -63,7 +63,6 @@ export default async function Page() {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <Heart className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 text-malina-soft" />
         <div className="mx-auto max-w-6xl px-5 pb-16 pt-14 md:pb-24 md:pt-20">
           <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-malina shadow-soft">
             <Heart className="h-3.5 w-3.5" /> Tax Protect dla branży beauty
@@ -152,6 +151,7 @@ export default async function Page() {
             <div className="rounded-3xl bg-ink p-8 text-white shadow-soft">
               <p className="text-xs font-bold uppercase tracking-widest text-malina-soft">Sekcja 2 · Dla Twojej firmy</p>
               <h3 className="mt-2 font-display text-2xl font-semibold">Bezgotówkowa obsługa sporów z urzędami</h3>
+              <p className="mt-1 text-sm text-malina-soft font-semibold">⚠ Zakres obejmuje 1 spór podatkowy rocznie. Więcej sporów lub wyższe potrzeby — wycena indywidualna.</p>
               <ul className="mt-5 space-y-3 text-[15px] leading-relaxed text-white/85">
                 {[
                   "Doradca podatkowy przy kontroli podatkowej i celno-skarbowej — organizuje i opłaca ubezpieczyciel",
@@ -169,9 +169,24 @@ export default async function Page() {
           </div>
 
           <div className="mt-6 rounded-2xl border border-gold/30 bg-gold/5 p-6 text-sm leading-relaxed text-ink-soft">
-            <strong className="text-ink">Gramy uczciwie — czego polisa nie obejmuje:</strong> zapłaty samych podatków i VAT
-            (to ryzyko nieubezpieczalne), grzywien z kodeksu karnego, kar administracyjnych, postępowań rozpoczętych przed
-            zawarciem umowy lub w 21-dniowej karencji oraz spraw toczących się poza Polską. Pełna lista wyłączeń w OWU.
+            <strong className="mb-3 block text-ink">Wyłączenia z ochrony (wyciąg z OWU § 8–9)</strong>
+            <ul className="grid gap-1.5 md:grid-cols-2">
+              {[
+                "Zapłata samego podatku, VAT, składek ZUS/KRUS — ryzyko nieubezpieczalne",
+                "Grzywny i kary z Kodeksu Karnego (polisa obejmuje wyłącznie Kodeks Karny Skarbowy)",
+                "Kary administracyjne nałożone przez organy inne niż wskazane w zakresie",
+                "Postępowania wszczęte lub zdarzenia, które wystąpiły przed zawarciem umowy",
+                "Postępowania wszczęte w 21-dniowym okresie karencji od daty zawarcia umowy",
+                "Sprawy i postępowania toczące się poza terytorium Rzeczypospolitej Polskiej",
+                "Działanie umyślne lub rażące niedbalstwo Ubezpieczonego",
+                "Czyny stanowiące przestępstwa niefiskalne (wyłudzenia, pranie pieniędzy itp.)",
+                "Firmy o przychodach powyżej 3 000 000 zł — wymagana indywidualna ocena ryzyka",
+                "Sekcja 2: wyłącznie 1 spór podatkowy rocznie — kolejne spory wymagają indywidualnej wyceny",
+              ].map((t) => (
+                <li key={t} className="flex gap-2"><span className="mt-0.5 shrink-0 text-gold">✕</span>{t}</li>
+              ))}
+            </ul>
+            <p className="mt-3 text-xs">Pełna treść wyłączeń: Załącznik 002BR do OWU Tax Protect zatwierdzonego przez Colonnade Insurance S.A. Oddział w Polsce, obowiązującego od 26.01.2023 r.</p>
           </div>
         </div>
       </section>

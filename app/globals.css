@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Figtree", system-ui, sans-serif;
   --font-body: "Figtree", system-ui, sans-serif;
 }
 
