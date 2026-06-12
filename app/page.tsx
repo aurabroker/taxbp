@@ -3,20 +3,17 @@ import WniosekForm, { Wariant } from "@/components/WniosekForm";
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-const FALLBACK_WARIANTY: Wariant[] = [];
+const SUPABASE_URL = "https://dhuvykwecsxgchzxufxw.supabase.co";
 
 async function getWarianty(): Promise<Wariant[]> {
   try {
-    const { supabaseAdmin } = await import("@/lib/supabaseAdmin");
-    const db = supabaseAdmin();
-    const { data } = await db
-      .from("tax_warianty")
-      .select("id, nazwa, suma_ubezpieczenia, podlimit_grzywny, skladka_roczna, opis, kolejnosc")
-      .eq("aktywny", true)
-      .order("kolejnosc");
-    return (data as Wariant[]) ?? FALLBACK_WARIANTY;
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/tax-warianty`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return [];
+    return await res.json();
   } catch {
-    return FALLBACK_WARIANTY;
+    return [];
   }
 }
 

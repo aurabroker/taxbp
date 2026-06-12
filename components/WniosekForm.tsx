@@ -21,6 +21,8 @@ declare global {
   }
 }
 
+const SUPABASE_URL = "https://dhuvykwecsxgchzxufxw.supabase.co";
+
 const pln = (n: number) =>
   new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN", maximumFractionDigits: 0 }).format(n);
 
@@ -89,7 +91,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
     setGusState("loading");
     setGusWarning(null);
     try {
-      const res = await fetch(`/api/gus?nip=${cleanNip(nip)}`);
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/tax-gus?nip=${cleanNip(nip)}`);
       const data = await res.json();
       if (data.found) {
         setNazwa(data.nazwa ?? "");
@@ -126,7 +128,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
 
     setSending(true);
     try {
-      const res = await fetch("/api/wniosek", {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/tax-wniosek`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
