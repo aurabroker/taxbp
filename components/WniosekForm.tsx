@@ -44,8 +44,10 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const [email, setEmail] = useState("");
   const [telefon, setTelefon] = useState("");
   const [osoba, setOsoba] = useState("");
+  const [pkd, setPkd] = useState("");
   const [zgody, setZgody] = useState({ prawdziwosc: false, postepowania: false, rodo: false, marketing: false });
   const [gusState, setGusState] = useState<"idle" | "loading" | "ok" | "manual">("idle");
+  const [gusWarning, setGusWarning] = useState<string | null>(null);
   const [token, setToken] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -85,6 +87,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   async function lookupGus() {
     if (!nipOk) return;
     setGusState("loading");
+    setGusWarning(null);
     try {
       const res = await fetch(`/api/gus?nip=${cleanNip(nip)}`);
       const data = await res.json();
@@ -92,6 +95,12 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
         setNazwa(data.nazwa ?? "");
         setRegon(data.regon ?? "");
         setAdres(data.adres ?? "");
+        if (data.pkd) setPkd(data.pkd);
+        if (data.data_zawieszenia) {
+          setGusWarning(`⚠️ Według GUS działalność jest zawieszona od ${data.data_zawieszenia}. Ubezpieczenie można wystawić po wznowieniu.`);
+        } else if (data.pkd_nazwa) {
+          setGusWarning(null);
+        }
         setGusState("ok");
       } else {
         setGusState("manual");
@@ -126,6 +135,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
           nazwa_firmy: nazwa.trim(),
           regon,
           adres,
+          pkd: pkd || undefined,
           przychod: przychodRounded,
           email: email.trim(),
           telefon: telefon.trim(),
@@ -230,7 +240,8 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
               </button>
             </div>
             {nip && !nipOk && <p className="mt-1.5 text-xs text-malina">Ten NIP wygląda na niepoprawny — sprawdź cyfry.</p>}
-            {gusState === "ok" && <p className="mt-1.5 text-xs text-green-700">✓ Dane pobrane z rejestru REGON — sprawdź, czy się zgadzają.</p>}
+            {gusState === "ok" && !gusWarning && <p className="mt-1.5 text-xs text-green-700">✓ Dane pobrane z rejestru REGON — sprawdź, czy się zgadzają.</p>}
+            {gusState === "ok" && gusWarning && <p className="mt-1.5 text-xs text-amber-700">{gusWarning}</p>}
             {gusState === "manual" && <p className="mt-1.5 text-xs text-ink-soft">Nie udało się pobrać danych — wpisz nazwę firmy ręcznie.</p>}
           </div>
 
