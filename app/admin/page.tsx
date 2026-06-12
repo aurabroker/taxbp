@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = "https://dhuvykwecsxgchzxufxw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRodXZ5a3dlY3N4Z2Noenh1Znh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcwMzAwNzEsImV4cCI6MjA5MjYwNjA3MX0.ooJL1hFIN3Mjb22QEtI7ZFAfSyLM4aGwduGGMykaaHE";
+const ADMIN_FN = `${SUPABASE_URL}/functions/v1/tax-admin`;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 type Wniosek = {
   id: string;
@@ -35,72 +42,84 @@ const STATUS_STYLE: Record<Wniosek["status"], string> = {
 };
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(false);
+  const [session, setSession] = useState<{ access_token: string } | null>(null);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [wnioski, setWnioski] = useState<Wniosek[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<"wszystkie" | Wniosek["status"]>("wszystkie");
 
-  async function load() {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        setSession(data.session);
+        loadWnioski(data.session.access_token);
+      }
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (s) loadWnioski(s.access_token);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  async function loadWnioski(token: string) {
     setLoading(true);
-    const res = await fetch("/api/admin/wnioski");
-    if (res.status === 401) {
-      setAuthed(false);
-      setLoading(false);
-      return;
-    }
+    const res = await fetch(ADMIN_FN, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = await res.json();
     setWnioski(data.wnioski ?? []);
-    setAuthed(true);
     setLoading(false);
   }
-
-  useEffect(() => {
-    load();
-  }, []);
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
     setLoginError("");
-    const res = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (!res.ok) return setLoginError("Nieprawidłowe hasło.");
-    setPassword("");
-    load();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setLoginError(error.message);
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setSession(null);
+    setWnioski([]);
   }
 
   async function patch(id: string, body: Record<string, unknown>) {
+    if (!session) return;
     setWnioski((w) => w.map((x) => (x.id === id ? { ...x, ...body } : x)));
-    await fetch("/api/admin/wnioski", {
+    await fetch(ADMIN_FN, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
       body: JSON.stringify({ id, ...body }),
     });
-    load();
+    loadWnioski(session.access_token);
   }
 
   const stats = useMemo(() => {
-    const total = wnioski.length;
     const wystawione = wnioski.filter((w) => w.status === "polisa_wystawiona");
-    const nowe = wnioski.filter((w) => w.status === "nowy").length;
-    const skladki = wystawione.reduce((a, w) => a + (w.skladka_roczna ?? 0), 0);
-    return { total, nowe, wystawione: wystawione.length, skladki };
+    return {
+      total: wnioski.length,
+      nowe: wnioski.filter((w) => w.status === "nowy").length,
+      wystawione: wystawione.length,
+      skladki: wystawione.reduce((a, w) => a + (w.skladka_roczna ?? 0), 0),
+    };
   }, [wnioski]);
 
   const visible = filter === "wszystkie" ? wnioski : wnioski.filter((w) => w.status === filter);
 
-  if (!authed) {
+  if (!session) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-blush px-5">
         <form onSubmit={login} className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-card">
           <h1 className="font-display text-2xl font-semibold">Panel Beauty Polisa</h1>
           <p className="mt-1 text-sm text-ink-soft">Tax Protect — wnioski</p>
-          <label htmlFor="pwd" className="label mt-6">Hasło</label>
-          <input id="pwd" type="password" className="field" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus />
+          <label htmlFor="email" className="label mt-6">E-mail</label>
+          <input id="email" type="email" className="field" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
+          <label htmlFor="pwd" className="label mt-4">Hasło</label>
+          <input id="pwd" type="password" className="field" value={password} onChange={(e) => setPassword(e.target.value)} />
           {loginError && <p className="mt-2 text-sm text-malina">{loginError}</p>}
           <button className="mt-5 w-full rounded-full bg-malina py-3 font-semibold text-white hover:bg-malina-dark">Zaloguj</button>
         </form>
@@ -116,9 +135,14 @@ export default function AdminPage() {
             <h1 className="font-display text-3xl font-semibold">Wnioski Tax Protect</h1>
             <p className="text-sm text-ink-soft">Beauty Polisa · panel wewnętrzny</p>
           </div>
-          <button onClick={load} className="rounded-full border border-ink/15 bg-white px-5 py-2 text-sm font-semibold hover:border-malina hover:text-malina">
-            {loading ? "Odświeżam…" : "Odśwież"}
-          </button>
+          <div className="flex gap-3">
+            <button onClick={() => loadWnioski(session.access_token)} className="rounded-full border border-ink/15 bg-white px-5 py-2 text-sm font-semibold hover:border-malina hover:text-malina">
+              {loading ? "Odświeżam…" : "Odśwież"}
+            </button>
+            <button onClick={logout} className="rounded-full border border-ink/15 bg-white px-5 py-2 text-sm font-semibold hover:border-malina hover:text-malina">
+              Wyloguj
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -140,9 +164,7 @@ export default function AdminPage() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`rounded-full px-4 py-1.5 text-sm font-semibold ${
-                filter === f ? "bg-ink text-white" : "bg-white text-ink-soft hover:text-ink"
-              }`}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold ${filter === f ? "bg-ink text-white" : "bg-white text-ink-soft hover:text-ink"}`}
             >
               {f === "wszystkie" ? "Wszystkie" : STATUS_LABEL[f]}
             </button>
