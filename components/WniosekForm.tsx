@@ -10,6 +10,8 @@ export type Wariant = {
   skladka_roczna: number;
   opis: string | null;
   kolejnosc: number;
+  przychod_min: number;
+  przychod_max: number;
 };
 
 declare global {
@@ -36,8 +38,10 @@ function isValidNip(raw: string) {
   return w.reduce((a, x, i) => a + x * Number(nip[i]), 0) % 11 === Number(nip[9]);
 }
 
+const SUMY = [50_000, 100_000];
+
 export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
-  const [wariantId, setWariantId] = useState<string>(warianty[1]?.id ?? warianty[0]?.id ?? "");
+  const [selectedSuma, setSelectedSuma] = useState<number>(50_000);
   const [nip, setNip] = useState("");
   const [nazwa, setNazwa] = useState("");
   const [regon, setRegon] = useState("");
@@ -59,7 +63,6 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-  // Turnstile
   useEffect(() => {
     if (!siteKey || tsRendered.current) return;
     const render = () => {
@@ -84,7 +87,22 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const przychodRounded = Math.round(przychodNum / 1000) * 1000;
   const nipOk = isValidNip(nip);
 
-  const wybrany = useMemo(() => warianty.find((w) => w.id === wariantId), [warianty, wariantId]);
+  // Wariant dopasowany do wybranej sumy i przychodu
+  const activeWariant = useMemo(() => {
+    if (!przychodRounded) return null;
+    return warianty.find(
+      (w) => w.suma_ubezpieczenia === selectedSuma &&
+             przychodRounded >= w.przychod_min &&
+             przychodRounded <= w.przychod_max
+    ) ?? null;
+  }, [warianty, selectedSuma, przychodRounded]);
+
+  // Dla każdej sumy — tabela składek (do wyświetlenia w kartach)
+  const skladkiDlaSumy = useMemo(() => {
+    const brackets = [250_000, 500_000, 1_000_000, 3_000_000];
+    return (suma: number) =>
+      brackets.map((max) => warianty.find((w) => w.suma_ubezpieczenia === suma && w.przychod_max === max));
+  }, [warianty]);
 
   async function lookupGus() {
     if (!nipOk) return;
@@ -100,7 +118,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
         if (data.pkd) setPkd(data.pkd);
         if (data.data_zawieszenia) {
           setGusWarning(`⚠️ Według GUS działalność jest zawieszona od ${data.data_zawieszenia}. Ubezpieczenie można wystawić po wznowieniu.`);
-        } else if (data.pkd_nazwa) {
+        } else {
           setGusWarning(null);
         }
         setGusState("ok");
@@ -116,7 +134,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
     e.preventDefault();
     setError("");
 
-    if (!wariantId) return setError("Wybierz wariant ubezpieczenia.");
+    if (!activeWariant) return setError("Podaj przychód, żebyśmy mogli dobrać właściwą składkę.");
     if (!nipOk) return setError("Podany NIP jest nieprawidłowy.");
     if (nazwa.trim().length < 3) return setError("Podaj nazwę działalności.");
     if (!przychodRounded) return setError("Podaj wielkość przychodów za ostatni rok.");
@@ -132,7 +150,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          wariant_id: wariantId,
+          wariant_id: activeWariant.id,
           nip: cleanNip(nip),
           nazwa_firmy: nazwa.trim(),
           regon,
@@ -179,45 +197,60 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
 
   return (
     <form onSubmit={submit} className="mt-10 space-y-10" noValidate>
-      {/* WARIANTY */}
-      <div className="grid gap-5 md:grid-cols-3">
-        {warianty.map((w, i) => {
-          const active = w.id === wariantId;
+
+      {/* WYBÓR SUMY */}
+      <div className="grid gap-5 md:grid-cols-2">
+        {SUMY.map((suma) => {
+          const active = selectedSuma === suma;
+          const podlimit = suma * 0.75;
+          const brackets = skladkiDlaSumy(suma);
           return (
             <button
               type="button"
-              key={w.id}
-              onClick={() => setWariantId(w.id)}
+              key={suma}
+              onClick={() => setSelectedSuma(suma)}
               aria-pressed={active}
               className={`relative rounded-3xl p-7 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-malina ${
                 active ? "bg-white shadow-card ring-2 ring-malina" : "bg-white/70 shadow-soft hover:shadow-card"
               }`}
             >
-              {i === 1 && (
-                <span className="absolute -top-3 left-6 rounded-full bg-malina px-3 py-1 text-xs font-bold text-white">
-                  Najczęściej wybierany
-                </span>
-              )}
-              <p className="text-xs font-bold uppercase tracking-widest text-ink-soft">{w.nazwa}</p>
-              <p className="mt-3 font-display text-3xl font-semibold">
-                {pln(w.skladka_roczna)} <span className="text-base font-normal text-ink-soft">/ rok</span>
-              </p>
-              <ul className="mt-4 space-y-1.5 text-sm text-ink-soft">
-                <li>Suma ubezpieczenia: <strong className="text-ink">{pln(w.suma_ubezpieczenia)}</strong></li>
-                {w.podlimit_grzywny != null && <li>Limit na grzywny i kary: <strong className="text-ink">{pln(w.podlimit_grzywny)}</strong></li>}
-                {w.opis && <li className="pt-1 leading-snug">{w.opis.replace(/\s*\[SKŁADKA DO POTWIERDZENIA\]\s*/, "")}</li>}
-              </ul>
+              <p className="text-xs font-bold uppercase tracking-widest text-ink-soft">Suma ubezpieczenia</p>
+              <p className="mt-2 font-display text-4xl font-semibold">{pln(suma)}</p>
+              <p className="mt-1 text-sm text-ink-soft">Podlimit grzywien i kar: <strong className="text-ink">{pln(podlimit)}</strong></p>
+
+              {/* Tabela składek */}
+              <table className="mt-5 w-full text-sm">
+                <thead>
+                  <tr className="text-left text-xs text-ink-soft">
+                    <th className="pb-1 font-normal">Przychód do</th>
+                    <th className="pb-1 text-right font-normal">Składka / rok</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { label: "250 000 zł", idx: 0 },
+                    { label: "500 000 zł", idx: 1 },
+                    { label: "1 000 000 zł", idx: 2 },
+                    { label: "3 000 000 zł", idx: 3 },
+                  ].map(({ label, idx }) => {
+                    const w = brackets[idx];
+                    const highlighted = w && activeWariant?.id === w.id;
+                    return (
+                      <tr key={idx} className={highlighted ? "font-semibold text-malina" : ""}>
+                        <td className="py-0.5">{label}</td>
+                        <td className="py-0.5 text-right">{w ? pln(w.skladka_roczna) : "—"}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
               <span className={`mt-5 inline-block rounded-full px-4 py-1.5 text-sm font-semibold ${active ? "bg-malina text-white" : "bg-malina-soft text-malina"}`}>
-                {active ? "Wybrany ✓" : "Wybierz"}
+                {active ? "Wybrana ✓" : "Wybierz"}
               </span>
             </button>
           );
         })}
-        {warianty.length === 0 && (
-          <div className="rounded-2xl bg-white p-6 text-sm text-ink-soft md:col-span-3">
-            Warianty składek pojawią się tu po konfiguracji (tabela <code>tax_warianty</code>).
-          </div>
-        )}
       </div>
 
       {/* FORMULARZ */}
@@ -258,10 +291,13 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
               id="przychod" inputMode="numeric" className="field" placeholder="np. 286 500"
               value={przychod} onChange={(e) => setPrzychod(e.target.value)}
             />
-            {przychodNum > 0 && (
+            {przychodNum > 0 && przychodRounded <= 3_000_000 && (
               <p className="mt-1.5 text-xs text-ink-soft">
                 Do wniosku przyjmiemy: <strong className="text-ink">{pln(przychodRounded)}</strong> (zaokrąglenie do pełnego tysiąca).
               </p>
+            )}
+            {przychodRounded > 3_000_000 && (
+              <p className="mt-1.5 text-xs text-malina">Przychody powyżej 3 mln zł — wyceną indywidualną. Skontaktuj się z nami.</p>
             )}
           </div>
 
@@ -281,12 +317,19 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
           </div>
         </div>
 
-        {wybrany && (
+        {/* Podsumowanie wybranego wariantu */}
+        {activeWariant && (
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-malina-soft/60 px-5 py-4 text-sm">
             <span>
-              Wybrany wariant: <strong>{wybrany.nazwa}</strong> · suma {pln(wybrany.suma_ubezpieczenia)}
+              Suma ubezpieczenia: <strong>{pln(activeWariant.suma_ubezpieczenia)}</strong>
+              {" · "}Podlimit grzywien: <strong>{pln(activeWariant.podlimit_grzywny ?? 0)}</strong>
             </span>
-            <span className="font-display text-xl font-semibold text-malina">{pln(wybrany.skladka_roczna)} / rok</span>
+            <span className="font-display text-xl font-semibold text-malina">{pln(activeWariant.skladka_roczna)} / rok</span>
+          </div>
+        )}
+        {przychodRounded > 0 && !activeWariant && przychodRounded <= 3_000_000 && (
+          <div className="mt-6 rounded-2xl bg-blush px-5 py-4 text-sm text-ink-soft">
+            Ładowanie składek…
           </div>
         )}
 
