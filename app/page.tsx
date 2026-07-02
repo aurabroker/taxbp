@@ -64,26 +64,45 @@ export default async function Page() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-6xl px-5 pb-16 pt-14 md:pb-24 md:pt-20">
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-malina shadow-soft">
-            <Heart className="h-3.5 w-3.5" /> Tax Protect dla branży beauty
-          </p>
-          <h1 className="max-w-3xl font-display text-4xl font-semibold leading-[1.08] md:text-6xl">
-            Kontrola skarbowa w&nbsp;salonie?{" "}
-            <span className="text-malina">Niech to będzie problem Twojego ubezpieczyciela.</span>
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
-            Prowadzisz salon, a nie kancelarię podatkową. Gdy odezwie się urząd skarbowy, ZUS albo Inspekcja Pracy —
-            ubezpieczyciel organizuje i opłaca doradcę podatkowego oraz prawnika, a grzywny karnoskarbowe refunduje.
-            Ty zajmujesz się klientkami.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a href="#wniosek" className="rounded-full bg-malina px-8 py-4 text-base font-semibold text-white shadow-card transition hover:bg-malina-dark">
-              Wypełnij wniosek — 3 minuty
-            </a>
-            <a href="#skladki" className="rounded-full border border-ink/15 bg-white px-8 py-4 text-base font-semibold transition hover:border-malina hover:text-malina">
-              Zobacz składki
-            </a>
+          <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+            <div>
+              <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-malina shadow-soft">
+                <Heart className="h-3.5 w-3.5" /> Tax Protect dla branży beauty
+              </p>
+              <h1 className="font-display text-4xl font-semibold leading-[1.08] md:text-6xl">
+                Kontrola skarbowa w&nbsp;salonie?{" "}
+                <span className="text-malina">Niech to będzie problem Twojego ubezpieczyciela.</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+                Prowadzisz salon, a nie kancelarię podatkową. Gdy odezwie się urząd skarbowy, ZUS albo Inspekcja Pracy —
+                ubezpieczyciel organizuje i opłaca doradcę podatkowego oraz prawnika, a grzywny karnoskarbowe refunduje.
+                Ty zajmujesz się klientkami.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <a href="#wniosek" className="rounded-full bg-malina px-8 py-4 text-base font-semibold text-white shadow-card transition hover:bg-malina-dark">
+                  Wypełnij wniosek — 3 minuty
+                </a>
+                <a href="#skladki" className="rounded-full border border-ink/15 bg-white px-8 py-4 text-base font-semibold transition hover:border-malina hover:text-malina">
+                  Zobacz składki
+                </a>
+              </div>
+            </div>
+
+            {/* HERO IMAGE */}
+            <div className="relative">
+              <div aria-hidden className="absolute -inset-4 -z-10 rounded-[2.75rem] bg-malina-soft/70 blur-2xl" />
+              <img
+                src="/hero-beauty.jpg"
+                alt="Właścicielka salonu beauty maluje usta czerwoną pomadką"
+                width={1600}
+                height={1067}
+                fetchPriority="high"
+                decoding="async"
+                className="aspect-[4/3] w-full rounded-3xl object-cover object-center shadow-card ring-1 ring-white/70"
+              />
+            </div>
           </div>
+
           <dl className="mt-12 grid max-w-3xl grid-cols-2 gap-x-8 gap-y-5 text-sm md:grid-cols-4">
             {[
               ["Colonnade", "ubezpieczyciel z ratingiem A- (AM Best)"],
