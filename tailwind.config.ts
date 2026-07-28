@@ -5,7 +5,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        malina: { DEFAULT: "#D81B60", dark: "#AD1457", soft: "#FCE4EC" },
+        malina: { DEFAULT: "#D81B60", dark: "#AD1457", soft: "#FCE4EC", line: "#E97BA6" },
         blush: "#FDF4F7",
         ink: { DEFAULT: "#222A45", soft: "#5B6478" },
         gold: "#C8963E",

@@ -45,7 +45,7 @@ export default async function Page() {
   return (
     <main>
       {/* NAV */}
-      <header className="sticky top-0 z-40 border-b border-malina-soft bg-blush/90 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b-2 border-malina-line bg-blush/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <a href="#" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
             Beauty <Heart className="h-5 w-5 text-malina" /> Polisa
@@ -82,7 +82,7 @@ export default async function Page() {
                 <a href="#wniosek" className="rounded-full bg-malina px-8 py-4 text-base font-semibold text-white shadow-card transition hover:bg-malina-dark">
                   Wypełnij wniosek — 3 minuty
                 </a>
-                <a href="#skladki" className="rounded-full border border-ink/15 bg-white px-8 py-4 text-base font-semibold transition hover:border-malina hover:text-malina">
+                <a href="#skladki" className="rounded-full border-2 border-ink/25 bg-white px-8 py-4 text-base font-semibold transition hover:border-malina hover:text-malina">
                   Zobacz składki
                 </a>
               </div>
@@ -149,7 +149,7 @@ export default async function Page() {
           <h2 className="font-display text-3xl font-semibold md:text-4xl">Jedna polisa, podwójna ochrona</h2>
           <p className="mt-3 max-w-2xl text-ink-soft">Tax Protect chroni równolegle Ciebie jako osobę i Twoją firmę jako podatnika.</p>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <div className="rounded-3xl bg-white p-8 shadow-soft">
+            <div className="rounded-3xl border-2 border-malina-line bg-white p-8 shadow-soft">
               <p className="text-xs font-bold uppercase tracking-widest text-malina">Sekcja 1 · Dla Ciebie</p>
               <h3 className="mt-2 font-display text-2xl font-semibold">Ochrona karnoskarbowa właścicielki i zespołu</h3>
               <ul className="mt-5 space-y-3 text-[15px] leading-relaxed text-ink-soft">
@@ -187,7 +187,7 @@ export default async function Page() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-gold/30 bg-gold/5 p-6 text-sm leading-relaxed text-ink-soft">
+          <div className="mt-6 rounded-2xl border-2 border-gold/60 bg-gold/5 p-6 text-sm leading-relaxed text-ink-soft">
             <strong className="mb-3 block text-ink">Wyłączenia z ochrony (wyciąg z OWU § 8–9)</strong>
             <ul className="grid gap-1.5 md:grid-cols-2">
               {[
@@ -247,7 +247,7 @@ export default async function Page() {
           <h2 className="text-center font-display text-3xl font-semibold md:text-4xl">Pytania, które słyszymy najczęściej</h2>
           <div className="mt-10 space-y-3">
             {FAQ_ITEMS.map((f) => (
-              <details key={f.q} className="faq rounded-2xl border border-malina-soft bg-blush/60 px-6 py-4 open:bg-blush">
+              <details key={f.q} className="faq rounded-2xl border-2 border-malina-line bg-blush/60 px-6 py-4 open:bg-blush">
                 <summary className="flex items-center justify-between gap-4 font-semibold">
                   {f.q}
                   <span className="faq-chevron text-xl text-malina transition-transform">+</span>
@@ -260,12 +260,15 @@ export default async function Page() {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-malina-soft bg-blush py-12 text-sm text-ink-soft">
-        <div className="mx-auto max-w-6xl space-y-6 px-5">
+      <footer className="border-t-2 border-malina-line bg-blush py-12 text-sm text-ink-soft">
+        <div className="w-full space-y-6 px-6 md:px-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
-              Beauty <Heart className="h-4 w-4 text-malina" /> Polisa
-            </span>
+            <div className="flex items-center gap-4">
+              <img src="/logo-colonnade.png" alt="Colonnade Insurance" className="h-9 w-auto" />
+              <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
+                Beauty <Heart className="h-4 w-4 text-malina" /> Polisa
+              </span>
+            </div>
             <span>Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</span>
           </div>
           <p className="max-w-4xl text-xs leading-relaxed">

@@ -47,8 +47,8 @@ const BRACKETS: { label: string; max: number | null }[] = [
 const SUMY = [50_000, 100_000];
 
 export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
-  const [bracket, setBracket] = useState<number | null | undefined>(undefined); // undefined = nie wybrano
-  const [selectedSuma, setSelectedSuma] = useState<number>(50_000);
+  const [bracket, setBracket] = useState<number | null | undefined>(250_000); // domyślnie: przychód do 250 000 zł
+  const [selectedSuma, setSelectedSuma] = useState<number>(50_000); // domyślnie: suma 50 000 zł
   const [nip, setNip] = useState("");
   const [nazwa, setNazwa] = useState("");
   const [regon, setRegon] = useState("");
@@ -195,14 +195,14 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
                 key={label}
                 onClick={() => { setBracket(max); setSelectedSuma(50_000); }}
                 aria-pressed={active}
-                className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-malina ${
+                className={`rounded-full border-2 px-5 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-malina ${
                   max === null
                     ? active
                       ? "border-gold bg-gold text-white"
-                      : "border-gold/50 bg-gold/5 text-gold hover:bg-gold/10"
+                      : "border-gold/70 bg-gold/5 text-gold hover:bg-gold/10"
                     : active
                       ? "border-malina bg-malina text-white"
-                      : "border-malina-soft bg-white text-ink hover:border-malina hover:text-malina"
+                      : "border-malina-line bg-white text-ink hover:border-malina hover:text-malina"
                 }`}
               >
                 {label}
@@ -213,7 +213,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
 
         {/* Powyżej 3M — wycena indywidualna */}
         {bracket === null && (
-          <div className="mt-5 rounded-2xl border border-gold/30 bg-gold/5 p-6">
+          <div className="mt-5 rounded-2xl border-2 border-gold/60 bg-gold/5 p-6">
             <p className="font-semibold text-ink">Wycena indywidualna</p>
             <p className="mt-1 text-sm text-ink-soft">
               Dla firm o przychodach powyżej 3 000 000 zł program standardowy nie obejmuje oferty online.
@@ -247,7 +247,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
                   aria-pressed={active}
                   disabled={!w}
                   className={`rounded-2xl border-2 p-5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-malina ${
-                    active ? "border-malina bg-white shadow-card" : "border-malina-soft bg-white/70 hover:shadow-soft"
+                    active ? "border-malina bg-white shadow-card" : "border-malina-line bg-white/70 hover:shadow-soft"
                   }`}
                 >
                   <p className="text-xs font-semibold uppercase tracking-widest text-ink-soft">Suma ubezpieczenia</p>
@@ -352,8 +352,10 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
           <button type="submit" disabled={sending} className="mt-6 w-full rounded-full bg-malina py-4 text-base font-semibold text-white shadow-card transition hover:bg-malina-dark disabled:opacity-60 md:w-auto md:px-12">
             {sending ? "Wysyłam wniosek…" : "Wyślij wniosek o ubezpieczenie"}
           </button>
-          <p className="mt-3 text-xs text-ink-soft">
-            Wysłanie wniosku nie jest jeszcze zawarciem umowy — potwierdzimy ochronę i składkę e-mailem.
+          <p className="mt-4 rounded-xl border-2 border-red-400 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            Wysłanie wniosku nie jest jeszcze zawarciem umowy — otrzymasz jednego meila potwierdzającego wysłanie wniosku.
+            Drugi e-mail będzie zawierał ofertę formalną, zgodną z Kodeksem Cywilnym. Dopiero jej zaakceptowanie,
+            będzie dla Ciebie wiążące.
           </p>
         </div>
       )}

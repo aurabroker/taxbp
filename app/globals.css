@@ -16,7 +16,7 @@ body { @apply bg-blush text-ink font-body antialiased; }
 }
 
 .field {
-  @apply w-full rounded-xl border border-malina-soft bg-white px-4 py-3 text-[15px] outline-none transition
+  @apply w-full rounded-xl border-2 border-malina-line bg-white px-4 py-3 text-[15px] outline-none transition
          focus:border-malina focus:ring-2 focus:ring-malina/15 placeholder:text-ink-soft/50;
 }
 .label { @apply mb-1.5 block text-sm font-semibold text-ink; }
