@@ -26,8 +26,12 @@ declare global {
 
 const SUPABASE_URL = "https://dhuvykwecsxgchzxufxw.supabase.co";
 
-const pln = (n: number) =>
-  new Intl.NumberFormat("pl-PL", { style: "currency", currency: "PLN", maximumFractionDigits: 0 }).format(n);
+// Deterministyczny formatter (bez Intl) — identyczny w SSR na edge i w przeglądarce,
+// żeby uniknąć błędów hydracji (Intl.NumberFormat daje różne separatory na Cloudflare Workers vs. przeglądarka).
+const pln = (n: number) => {
+  const grouped = Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return `${grouped} zł`;
+};
 
 function cleanNip(raw: string) { return raw.replace(/[^0-9]/g, ""); }
 function isValidNip(raw: string) {
