@@ -322,21 +322,22 @@ export default async function Page() {
 
       {/* FOOTER */}
       <footer className="border-t-2 border-malina-line bg-blush py-12 text-sm text-ink-soft">
-        <div className="w-full space-y-6 px-6 md:px-12">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-5">
-              <img src="/colonnade-logo.png" alt="Colonnade Insurance" className="h-9 w-auto" />
-              <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-9 w-auto" />
+        <div className="mx-auto max-w-6xl space-y-8 px-6">
+          {/* Loga + ubezpieczyciel */}
+          <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
+            <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-12 w-auto md:h-14" />
+            <div className="flex flex-col items-center gap-2 md:items-end">
+              <img src="/colonnade-logo.png" alt="Colonnade Insurance S.A. Oddział w Polsce" className="h-36 w-auto md:h-44" />
+              <span className="text-xs">Ubezpieczyciel · rating A- (AM Best)</span>
             </div>
-            <span>Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</span>
           </div>
 
           {/* Zakładki informacyjne */}
-          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-malina-line/60 pt-6 text-sm font-semibold text-ink md:justify-start">
             <a href="/o-nas" className="hover:text-malina">O nas</a>
-            <a href="https://auraexpert.pl/regulamin" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Regulamin</a>
-            <a href="https://auraexpert.pl/rodo" target="_blank" rel="noopener noreferrer" className="hover:text-malina">RODO</a>
-            <a href="https://auraexpert.pl/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Polityka Prywatności</a>
+            <a href="/regulamin" className="hover:text-malina">Regulamin</a>
+            <a href="/rodo" className="hover:text-malina">RODO</a>
+            <a href="/polityka-prywatnosci" className="hover:text-malina">Polityka Prywatności</a>
           </nav>
           <p className="max-w-4xl text-xs leading-relaxed">
             Beauty Polisa to program ubezpieczeniowy dystrybuowany przez Aura Expert sp. z o.o. z siedzibą w Warszawie,

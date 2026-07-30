@@ -35,9 +35,9 @@ export default function InfoPage({
         <div className="w-full space-y-4 px-6 md:px-12">
           <nav className="flex flex-wrap gap-x-6 gap-y-2 font-semibold text-ink">
             <a href="/o-nas" className="hover:text-malina">O nas</a>
-            <a href="https://auraexpert.pl/regulamin" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Regulamin</a>
-            <a href="https://auraexpert.pl/rodo" target="_blank" rel="noopener noreferrer" className="hover:text-malina">RODO</a>
-            <a href="https://auraexpert.pl/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Polityka Prywatności</a>
+            <a href="/regulamin" className="hover:text-malina">Regulamin</a>
+            <a href="/rodo" className="hover:text-malina">RODO</a>
+            <a href="/polityka-prywatnosci" className="hover:text-malina">Polityka Prywatności</a>
           </nav>
           <p className="text-xs">© {new Date().getFullYear()} Aura Expert sp. z o.o.</p>
         </div>
