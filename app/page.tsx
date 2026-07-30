@@ -62,7 +62,7 @@ export default async function Page() {
       <header className="sticky top-0 z-40 border-b-2 border-malina-line bg-blush/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <a href="#" className="flex items-center">
-            <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-9 w-auto" />
+            <img src="/logo_combined.png" alt="Beauty Polisa — Tax Protect (Colonnade)" className="h-10 w-auto md:h-12" />
           </a>
           <nav className="hidden items-center gap-7 text-sm font-medium text-ink-soft md:flex">
             <a href="#ochrona" className="hover:text-malina">Co Cię chroni</a>
