@@ -39,6 +39,20 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
   { q: "Jak szybko wypłacane są środki po zgłoszeniu?", a: "Kodeks cywilny przewiduje termin 30 dni od zgłoszenia. Szkody zgłaszane są do brokera (szkodabr@auraconsulting.pl) lub przez formularze na vero24.pl." },
 ];
 
+type Serwis = { label: string; desc: string; href: string | null; img: string; kind: "facet" | "logo"; soon?: boolean };
+
+const SERWISY: { eyebrow: string; title: string; intro: string; items: Serwis[] } = {
+  eyebrow: "Nasze serwisy",
+  title: "Poznaj pozostałe serwisy Aura Expert",
+  intro: "Wyspecjalizowane rozwiązania w ramach grupy Aura Expert — dla przedsiębiorców, zespołów i branż.",
+  items: [
+    { label: "utratadochodu.pl", desc: "Ochrona dochodu dla wolnych zawodów", href: "https://utratadochodu.pl", img: "https://auraexpert.pl/images/services/utratadochodu.png", kind: "facet" },
+    { label: "ERGO Grupa Otwarta", desc: "Ubezpieczenia grupowe ERGO", href: "https://ergo.beautypolisa.eu", img: "https://auraexpert.pl/images/services/ergo.png", kind: "logo" },
+    { label: "Grupowe Pakiety Branżowe", desc: "Pakiety ubezpieczeń dla branż", href: "https://ergo.auraexpert.pl/", img: "https://auraexpert.pl/images/services/ergo.png", kind: "logo" },
+    { label: "Beauty Polisa", desc: "Ochrona salonów i gabinetów", href: null, img: "https://auraexpert.pl/images/beautypolisa.png", kind: "logo", soon: true },
+  ],
+};
+
 export default async function Page() {
   const warianty = await getWarianty();
 
@@ -48,7 +62,7 @@ export default async function Page() {
       <header className="sticky top-0 z-40 border-b-2 border-malina-line bg-blush/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <a href="#" className="flex items-center">
-            <img src="/logo-beautypolisa.png" alt="Beauty Polisa" className="h-9 w-auto" />
+            <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-9 w-auto" />
           </a>
           <nav className="hidden items-center gap-7 text-sm font-medium text-ink-soft md:flex">
             <a href="#ochrona" className="hover:text-malina">Co Cię chroni</a>
@@ -259,13 +273,60 @@ export default async function Page() {
         </div>
       </section>
 
+      {/* NASZE SERWISY */}
+      <section id="serwisy" className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-6xl px-5">
+          <p className="text-xs font-bold uppercase tracking-widest text-malina">{SERWISY.eyebrow}</p>
+          <h2 className="mt-2 font-display text-3xl font-semibold md:text-4xl">{SERWISY.title}</h2>
+          <p className="mt-3 max-w-2xl text-ink-soft">{SERWISY.intro}</p>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {SERWISY.items.map((s) => {
+              const inner = (
+                <>
+                  <div className="flex h-24 items-center justify-center rounded-xl bg-blush p-4">
+                    <img
+                      src={s.img}
+                      alt={s.label}
+                      loading="lazy"
+                      className={`max-h-full w-auto ${s.kind === "facet" ? "rounded-lg object-cover" : "object-contain"}`}
+                    />
+                  </div>
+                  <div className="mt-4 flex items-center gap-2">
+                    <h3 className="font-display text-lg font-semibold">{s.label}</h3>
+                    {s.soon && (
+                      <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-xs font-semibold text-gold">Wkrótce</span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-soft">{s.desc}</p>
+                </>
+              );
+              return s.href ? (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border-2 border-malina-line bg-white p-5 transition hover:shadow-card hover:border-malina"
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div key={s.label} className="rounded-2xl border-2 border-malina-line bg-white p-5">
+                  {inner}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="border-t-2 border-malina-line bg-blush py-12 text-sm text-ink-soft">
         <div className="w-full space-y-6 px-6 md:px-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-5">
-              <img src="/logo-colonnade.png" alt="Colonnade Insurance" className="h-9 w-auto" />
-              <img src="/logo-beautypolisa.png" alt="Beauty Polisa" className="h-9 w-auto" />
+              <img src="/colonnade-logo.png" alt="Colonnade Insurance" className="h-9 w-auto" />
+              <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-9 w-auto" />
             </div>
             <span>Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</span>
           </div>
@@ -273,9 +334,9 @@ export default async function Page() {
           {/* Zakładki informacyjne */}
           <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
             <a href="/o-nas" className="hover:text-malina">O nas</a>
-            <a href="/regulamin" className="hover:text-malina">Regulamin</a>
-            <a href="/rodo" className="hover:text-malina">RODO</a>
-            <a href="/polityka-prywatnosci" className="hover:text-malina">Polityka Prywatności</a>
+            <a href="https://auraexpert.pl/regulamin" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Regulamin</a>
+            <a href="https://auraexpert.pl/rodo" target="_blank" rel="noopener noreferrer" className="hover:text-malina">RODO</a>
+            <a href="https://auraexpert.pl/polityka-prywatnosci" target="_blank" rel="noopener noreferrer" className="hover:text-malina">Polityka Prywatności</a>
           </nav>
           <p className="max-w-4xl text-xs leading-relaxed">
             Beauty Polisa to program ubezpieczeniowy dystrybuowany przez Aura Expert sp. z o.o. z siedzibą w Warszawie,

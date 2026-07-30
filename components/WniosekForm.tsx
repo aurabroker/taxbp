@@ -57,7 +57,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const [telefon, setTelefon] = useState("");
   const [osoba, setOsoba] = useState("");
   const [pkd, setPkd] = useState("");
-  const [zgody, setZgody] = useState({ prawdziwosc: false, postepowania: false, rodo: false, marketing: false });
+  const [zgody, setZgody] = useState({ prawdziwosc: false, postepowania: false, rodo: false, kanaly: false, marketing: false });
   const [gusState, setGusState] = useState<"idle" | "loading" | "ok" | "manual">("idle");
   const [gusWarning, setGusWarning] = useState<string | null>(null);
   const [token, setToken] = useState("");
@@ -149,6 +149,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
           zgoda_prawdziwosc: zgody.prawdziwosc,
           oswiadczenie_brak_postepowan: zgody.postepowania,
           zgoda_marketing: zgody.marketing,
+          zgoda_kanaly: zgody.kanaly,
           turnstileToken: token,
         }),
       });
@@ -332,6 +333,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
               { k: "prawdziwosc" as const, req: true, t: "Oświadczam, że podane dane są prawdziwe i kompletne. Wiem, że umowa ubezpieczenia zawierana jest w zaufaniu do złożonych oświadczeń." },
               { k: "postepowania" as const, req: true, t: "Oświadczam, że wobec mnie ani mojej firmy nie toczy się obecnie postępowanie karnoskarbowe, kontrola podatkowa, celno-skarbowa ani spór z ZUS, PIP lub PFRON." },
               { k: "rodo" as const, req: true, t: "Zapoznałam/em się z notą informacyjną RODO Aura Expert sp. z o.o. i wyrażam zgodę na przetwarzanie moich danych w celu obsługi wniosku o ubezpieczenie." },
+              { k: "kanaly" as const, req: false, t: "Wyrażam zgodę na kontakt w sprawie oferty kanałami elektronicznymi i telefonicznymi: SMS, WhatsApp, komunikatory oraz połączenia telefoniczne (art. 172 Prawa telekomunikacyjnego oraz art. 10 ustawy o świadczeniu usług drogą elektroniczną)." },
               { k: "marketing" as const, req: false, t: "Chcę otrzymywać informacje o produktach Beauty Polisa (opcjonalnie)." },
             ].map((z) => (
               <label key={z.k} className="flex cursor-pointer gap-3">
