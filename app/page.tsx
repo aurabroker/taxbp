@@ -62,7 +62,7 @@ export default async function Page() {
       <header className="sticky top-0 z-40 border-b-2 border-malina-line bg-blush/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
           <a href="#" className="flex items-center">
-            <img src="/logo_combined.png" alt="Beauty Polisa — Tax Protect (Colonnade)" className="h-10 w-auto md:h-12" />
+            <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-9 w-auto" />
           </a>
           <nav className="hidden items-center gap-7 text-sm font-medium text-ink-soft md:flex">
             <a href="#ochrona" className="hover:text-malina">Co Cię chroni</a>
@@ -332,10 +332,7 @@ export default async function Page() {
 
             {/* Kolumny 2 + 3 (połączone) — cała reszta */}
             <div className="space-y-6 md:col-span-2">
-              <div className="flex flex-wrap items-center gap-4">
-                <img src="/BeautyPolisa_logo_podstawowe_poziome.png" alt="Beauty Polisa" className="h-12 w-auto md:h-14" />
-                <span className="text-xs">Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</span>
-              </div>
+              <p className="text-xs">Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</p>
 
               <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
                 <a href="/o-nas" className="hover:text-malina">O nas</a>
