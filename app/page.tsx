@@ -47,13 +47,13 @@ export default async function Page() {
       {/* NAV */}
       <header className="sticky top-0 z-40 border-b-2 border-malina-line bg-blush/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
-          <a href="#" className="flex items-center gap-2 font-display text-xl font-bold tracking-tight">
-            Beauty <Heart className="h-5 w-5 text-malina" /> Polisa
+          <a href="#" className="flex items-center">
+            <img src="/logo-beautypolisa.png" alt="Beauty Polisa" className="h-9 w-auto" />
           </a>
           <nav className="hidden items-center gap-7 text-sm font-medium text-ink-soft md:flex">
             <a href="#ochrona" className="hover:text-malina">Co Cię chroni</a>
             <a href="#skladki" className="hover:text-malina">Składki</a>
-            <a href="#faq" className="hover:text-malina">Pytania</a>
+            <a href="#faq" className="hover:text-malina">Pytania / FAQ</a>
           </nav>
           <a href="#wniosek" className="rounded-full bg-malina px-5 py-2.5 text-sm font-semibold text-white shadow-card transition hover:bg-malina-dark">
             Złóż wniosek
@@ -263,14 +263,20 @@ export default async function Page() {
       <footer className="border-t-2 border-malina-line bg-blush py-12 text-sm text-ink-soft">
         <div className="w-full space-y-6 px-6 md:px-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-5">
               <img src="/logo-colonnade.png" alt="Colonnade Insurance" className="h-9 w-auto" />
-              <span className="flex items-center gap-2 font-display text-lg font-bold text-ink">
-                Beauty <Heart className="h-4 w-4 text-malina" /> Polisa
-              </span>
+              <img src="/logo-beautypolisa.png" alt="Beauty Polisa" className="h-9 w-auto" />
             </div>
             <span>Ubezpieczyciel: Colonnade Insurance S.A. Oddział w Polsce · rating A- (AM Best)</span>
           </div>
+
+          {/* Zakładki informacyjne */}
+          <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-ink">
+            <a href="/o-nas" className="hover:text-malina">O nas</a>
+            <a href="/regulamin" className="hover:text-malina">Regulamin</a>
+            <a href="/rodo" className="hover:text-malina">RODO</a>
+            <a href="/polityka-prywatnosci" className="hover:text-malina">Polityka Prywatności</a>
+          </nav>
           <p className="max-w-4xl text-xs leading-relaxed">
             Beauty Polisa to program ubezpieczeniowy dystrybuowany przez Aura Expert sp. z o.o. z siedzibą w Warszawie,
             ul. Bolkowska 2A/28, 01-466 Warszawa, KRS 0000599840, NIP 5242793544 — agenta ubezpieczeniowego wpisanego do

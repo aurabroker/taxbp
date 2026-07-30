@@ -67,7 +67,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const tsRef = useRef<HTMLDivElement>(null);
   const tsRendered = useRef(false);
 
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const siteKey = process.env.NEXT_PUBLIC_SITE_KEY;
   const nipOk = isValidNip(nip);
 
   useEffect(() => {
