@@ -101,7 +101,7 @@ function page(status: number, title: string, message: string): Response {
       <div style="font-size:40px;margin-bottom:8px;">💗</div>
       <h1 style="font-size:24px;margin:0 0 12px;">${title}</h1>
       <p style="font-size:15px;line-height:1.6;color:#5B6478;margin:0 0 24px;">${message}</p>
-      <a href="https://beautypolisa.pl" style="display:inline-block;background:#D81B60;color:#fff;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:999px;">Wróć na stronę</a>
+      <a href="https://beautypolisa.eu" style="display:inline-block;background:#D81B60;color:#fff;text-decoration:none;font-weight:bold;padding:12px 26px;border-radius:999px;">Wróć na stronę</a>
     </div>
   </body></html>`;
   return new Response(html, { status, headers: { "Content-Type": "text/html; charset=utf-8" } });
