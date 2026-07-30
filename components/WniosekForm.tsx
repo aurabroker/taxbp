@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import WycenaModal from "./WycenaModal";
 
 export type Wariant = {
   id: string;
@@ -64,6 +65,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [showWycena, setShowWycena] = useState(false);
   const tsRef = useRef<HTMLDivElement>(null);
   const tsRendered = useRef(false);
 
@@ -170,18 +172,22 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
 
   if (done) {
     return (
-      <div id="wniosek" className="mt-10 rounded-3xl bg-white p-10 text-center shadow-card">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-malina-soft text-3xl">💗</div>
-        <h3 className="text-2xl font-semibold">Wniosek wysłany — dziękujemy!</h3>
+      <div id="wniosek" className="mt-10 rounded-3xl border-2 border-malina-line bg-white p-10 text-center shadow-card">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-malina-soft text-3xl">📩</div>
+        <h3 className="text-2xl font-semibold">Sprawdź swoją skrzynkę e-mail</h3>
         <p className="mx-auto mt-3 max-w-md text-ink-soft">
-          Potwierdzenie znajdziesz w swojej skrzynce e-mail. Odezwiemy się, gdy tylko polisa będzie gotowa —
-          zwykle w ciągu 1–2 dni roboczych.
+          Wysłaliśmy do Ciebie wiadomość z linkiem potwierdzającym. <strong>Kliknij link w e-mailu</strong>, aby dokończyć
+          złożenie wniosku. Dopiero po potwierdzeniu przekażemy wniosek do obsługi i prześlemy Ci komplet dokumentów (OWU, Karta produktu).
+        </p>
+        <p className="mx-auto mt-3 max-w-md text-xs text-ink-soft">
+          Nie widzisz wiadomości? Sprawdź folder SPAM lub Oferty.
         </p>
       </div>
     );
   }
 
   return (
+    <>
     <form onSubmit={submit} className="mt-10 space-y-8" noValidate>
 
       {/* KROK 1 — PRZYCHODY */}
@@ -221,11 +227,11 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
               Skontaktuj się z nami — przygotujemy ofertę dopasowaną do Twojej skali działalności.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <a href="tel:+48504400901" className="rounded-full bg-malina px-6 py-2.5 text-sm font-semibold text-white hover:bg-malina-dark">
+              <button type="button" onClick={() => setShowWycena(true)} className="rounded-full bg-malina px-6 py-2.5 text-sm font-semibold text-white hover:bg-malina-dark">
+                Wypełnij formularz wyceny
+              </button>
+              <a href="tel:+48504400901" className="rounded-full border-2 border-malina px-6 py-2.5 text-sm font-semibold text-malina hover:bg-malina-soft">
                 Zadzwoń: +48 504 400 901
-              </a>
-              <a href="mailto:biuro@beautypolisa.pl" className="rounded-full border border-malina px-6 py-2.5 text-sm font-semibold text-malina hover:bg-malina-soft">
-                Napisz e-mail
               </a>
             </div>
           </div>
@@ -265,7 +271,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
               );
             })}
           </div>
-          <p className="mt-2 text-xs text-ink-soft">Potrzebujesz obsługi więcej niż 1 sporu lub wyższej sumy? <a href="tel:+48504400901" className="text-malina underline">Skontaktuj się z nami</a> — przygotujemy wycenę indywidualną.</p>
+          <p className="mt-2 text-xs text-ink-soft">Potrzebujesz obsługi więcej niż 1 sporu lub wyższej sumy? <button type="button" onClick={() => setShowWycena(true)} className="font-semibold text-malina underline hover:text-malina-dark">Skontaktuj się z nami</button> — przygotujemy wycenę indywidualną.</p>
         </div>
       )}
 
@@ -362,5 +368,7 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
         </div>
       )}
     </form>
+    <WycenaModal open={showWycena} onClose={() => setShowWycena(false)} />
+    </>
   );
 }
