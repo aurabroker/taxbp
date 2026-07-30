@@ -60,12 +60,20 @@ async function fetchDoc(url: string, filename: string): Promise<Attachment | nul
 
 async function documentAttachments(): Promise<Attachment[]> {
   const base = `${Deno.env.get("SUPABASE_URL") ?? ""}/storage/v1/object/public/dokumenty`;
+  // Kolejno próbowane URL-e (nazwy w Storage są case-sensitive) — bierzemy pierwszy, który się pobierze.
   const docs = [
-    { url: Deno.env.get("DOC_OWU_URL") || `${base}/owu.pdf`, filename: "OWU-Tax-Protect.pdf" },
-    { url: Deno.env.get("DOC_KARTA_URL") || `${base}/karta-produktu.pdf`, filename: "Karta-produktu-Tax-Protect.pdf" },
+    { urls: [Deno.env.get("DOC_OWU_URL"), `${base}/OWU.pdf`, `${base}/owu.pdf`], filename: "OWU-Tax-Protect.pdf" },
+    { urls: [Deno.env.get("DOC_KARTA_URL"), `${base}/karta-produktu.pdf`, `${base}/Karta-produktu.pdf`], filename: "Karta-produktu-Tax-Protect.pdf" },
   ];
-  const results = await Promise.all(docs.map((d) => fetchDoc(d.url, d.filename)));
-  return results.filter((x): x is Attachment => x !== null);
+  const out: Attachment[] = [];
+  for (const d of docs) {
+    for (const u of d.urls) {
+      if (!u) continue;
+      const a = await fetchDoc(u, d.filename);
+      if (a) { out.push(a); break; }
+    }
+  }
+  return out;
 }
 
 async function sendEmail(to: string, subject: string, html: string, attachments?: Attachment[]): Promise<boolean> {
