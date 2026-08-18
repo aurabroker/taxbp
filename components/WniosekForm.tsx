@@ -73,7 +73,9 @@ export default function WniosekForm({ warianty }: { warianty: Wariant[] }) {
   const tsRef = useRef<HTMLDivElement>(null);
   const tsRendered = useRef(false);
 
-  const siteKey = process.env.NEXT_PUBLIC_SITE_KEY;
+  // Site key Turnstile jest publiczny (trafia do HTML w przeglądarce) — wpięty na stałe jako fallback,
+  // żeby widget działał niezależnie od zmiennej build-time w Cloudflare. Zmienna, jeśli ustawiona, ma pierwszeństwo.
+  const siteKey = process.env.NEXT_PUBLIC_SITE_KEY || "0x4AAAAAAEAB_gMbtcBWYj8g";
   const nipOk = isValidNip(nip);
 
   useEffect(() => {

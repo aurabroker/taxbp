@@ -30,7 +30,8 @@ export default function WycenaModal({ open, onClose }: { open: boolean; onClose:
   const tsRef = useRef<HTMLDivElement>(null);
   const tsRendered = useRef(false);
 
-  const siteKey = process.env.NEXT_PUBLIC_SITE_KEY;
+  // Site key Turnstile jest publiczny — wpięty na stałe jako fallback (zmienna build-time ma pierwszeństwo).
+  const siteKey = process.env.NEXT_PUBLIC_SITE_KEY || "0x4AAAAAAEAB_gMbtcBWYj8g";
   const nipOk = nip === "" || isValidNip(nip);
   const telOk = cleanNip(telefon).length >= 9;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
